@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +51,11 @@ public class NotesActivity extends AppCompatActivity {
                 if(position == 4){
                     Toast.makeText(NotesActivity.this, "Note 5", Toast.LENGTH_SHORT).show();
                 }
-
+                Intent noteswebviewIntent = new Intent(getApplicationContext(),notes_webview.class);
+                startActivity(noteswebviewIntent);
             }
         });
-//        super.onCreate(savedInstanceState);
+
     }
 
     class MyAdapter extends ArrayAdapter<String>{

@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".NotesActivity"></activity>
+        <activity android:name=".notes_webview"></activity>
         <activity android:name=".TimeTableActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity
