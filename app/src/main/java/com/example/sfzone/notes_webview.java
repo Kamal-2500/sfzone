@@ -24,7 +24,7 @@ public class notes_webview extends AppCompatActivity {
         progressbar1= findViewById(R.id.progressbar1);
         progressbar1.setVisibility(View.VISIBLE);
 
-        String url="https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf";
+        String url="https://kamal002.000webhostapp.com/sfzone/uploaded_materials/Assignment-1.pdf";
         String finalURL="http://drive.google.com/viewerng/viewer?embedded=true&url="+url;
 
         webview1.setWebViewClient(new WebViewClient());
