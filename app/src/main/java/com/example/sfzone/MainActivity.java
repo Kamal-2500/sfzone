@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent loginIntent=new Intent(MainActivity.this,Login2Activity.class);
+                Intent loginIntent=new Intent(MainActivity.this,ActivityforHomeScreen.class);
                 startActivity(loginIntent);
                 onBackPressed();
             }

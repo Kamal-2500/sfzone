@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.sfzone.ActivityforHomeScreen;
+import com.example.sfzone.EventActivity;
 import com.example.sfzone.MainActivity;
 import com.example.sfzone.NotesActivity;
 import com.example.sfzone.R;
@@ -51,6 +52,17 @@ public class HomeFragment extends Fragment {
                 startActivity(notesIntent);
             }
         });
+
+        ImageView eventsImageView = (ImageView) root.findViewById(R.id.eventsImageView);
+        eventsImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventsIntent = new Intent(getContext(), EventActivity.class);
+                startActivity(eventsIntent);
+            }
+        });
+
+
 
         ImageView scanqrImageView = (ImageView) root.findViewById(R.id.scanqrImageView);
         scanqrImageView.setOnClickListener(new View.OnClickListener() {

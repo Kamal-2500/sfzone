@@ -17,40 +17,37 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class NotesActivity extends AppCompatActivity {
 
     ListView notesListView;
-    String mtitle[]={"MIS Unit 1","Zoomla_Unit_3_Part_1","Android_Unit4_Notes","Android_Unit5_Notes","MIS Unit 2"};
-    Object[] images ={R.drawable.pdf1,R.drawable.pdf1,R.drawable.pdf1,R.drawable.pdf1,R.drawable.pdf1};
+    List<String> titleList = new ArrayList<>();
+    List<String> iconList = new ArrayList<>();
+    public List<NotesDetails> notearray= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
 
-        notesListView = (ListView) findViewById(R.id.notesListView);
+        getAllNotes(this);
 
-        MyAdapter adapter = new MyAdapter(this, mtitle, images);
-        notesListView.setAdapter(adapter);
+        notesListView = (ListView) findViewById(R.id.notesListView);
 
         notesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    Toast.makeText(NotesActivity.this, "Note 1", Toast.LENGTH_SHORT).show();
-                }
-                if(position == 1){
-                    Toast.makeText(NotesActivity.this, "Note 2", Toast.LENGTH_SHORT).show();
-                }
-                if(position == 2){
-                    Toast.makeText(NotesActivity.this, "Note 3", Toast.LENGTH_SHORT).show();
-                }
-                if(position == 3){
-                    Toast.makeText(NotesActivity.this, "Note 4", Toast.LENGTH_SHORT).show();
-                }
-                if(position == 4){
-                    Toast.makeText(NotesActivity.this, "Note 5", Toast.LENGTH_SHORT).show();
-                }
                 Intent noteswebviewIntent = new Intent(getApplicationContext(),notes_webview.class);
                 startActivity(noteswebviewIntent);
             }
@@ -58,15 +55,68 @@ public class NotesActivity extends AppCompatActivity {
 
     }
 
+    public void getAllNotes(final Context c){
+        try {
+
+            StringRequest request= new StringRequest(Request.Method.GET, "https://kamal002.000webhostapp.com/sfzone/api/getAllNotes.php",
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject obj = new JSONObject(response);
+
+
+                                // 1. convert object list to json array
+                                JSONArray jsonArray = (JSONArray) obj.get("list");
+                                // 2. create for loop to iterate to json array
+                                for(int i=0; i<jsonArray.length();i++)
+                                {
+                                    // 3. create json object for each item of an json array = o
+                                    // 4. convert json object to notedetails
+                                    JSONObject jobj=(JSONObject) jsonArray.get(i);
+                                    NotesDetails note= new NotesDetails(
+                                            jobj.getInt("id"),
+                                            jobj.getString("file_name"),
+                                            jobj.getString("file_url"),
+                                            jobj.getString("file_icon")
+                                    );
+                                    notearray.add(note);
+                                    titleList.add(note.getFile_Name());
+                                    iconList.add(note.getFile_Icon());
+                                }
+
+                                MyAdapter adapter = new MyAdapter(c, titleList, iconList);
+                                notesListView.setAdapter(adapter);
+
+                                Toast.makeText(getApplicationContext(),"Got the list.",Toast.LENGTH_SHORT).show();
+                            }
+                            catch(Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_SHORT).show();
+                }
+            });
+            Volley.newRequestQueue(this).add(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     class MyAdapter extends ArrayAdapter<String>{
 
         Context context;
-        String rtitle[];
-        Object rImgs[];
+        List<String> rtitle;
+        List<String> rImgs;
 
-        MyAdapter(Context c,String title[],Object imgs[]){
+        MyAdapter(Context c, List<String> title, List<String> imgs){
             super(c,R.layout.notes_row,R.id.note_title1, title);
-            this.context=c;
+            this.context= (Context) c;
             this.rtitle=title;
             this.rImgs=imgs;
         }
@@ -79,8 +129,39 @@ public class NotesActivity extends AppCompatActivity {
             ImageView images = row.findViewById(R.id.note_image);
             TextView myTitle=row.findViewById(R.id.note_title1);
 
-            images.setImageResource((Integer) rImgs[position]);
-            myTitle.setText(rtitle[position]);
+            myTitle.setText(rtitle.get(position));
+            String imgType = rImgs.get(position);
+
+             if(imgType.equals("pdf3")) {
+                 images.setImageResource(R.drawable.pdf2);
+             }
+             else if(imgType.equals("doc")) {
+                images.setImageResource(R.drawable.doc);
+             }
+             else if(imgType.equals("jpg")) {
+                 images.setImageResource(R.drawable.jpg);
+             }
+             else if(imgType.equals("png")) {
+                 images.setImageResource(R.drawable.png);
+             }
+             else if(imgType.equals("ppt")) {
+                 images.setImageResource(R.drawable.ppt);
+             }
+             else if(imgType.equals("word")) {
+                 images.setImageResource(R.drawable.word);
+             }
+             else if(imgType.equals("xls")) {
+                 images.setImageResource(R.drawable.xls);
+             }
+             else if(imgType.equals("zip")) {
+                 images.setImageResource(R.drawable.zip);
+             }
+             else{
+                 images.setImageResource(R.drawable.dflt);
+             }
+
+           // images.setImageResource((Integer) rImgs[position]);
+
 
             return row;
         }

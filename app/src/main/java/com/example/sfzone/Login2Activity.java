@@ -83,7 +83,7 @@ public class Login2Activity extends AppCompatActivity {
         jsonBody.put("password", password);
 
         final String requestBody = jsonBody.toString();
-        StringRequest request= new StringRequest(Request.Method.POST, "https://kamal002.000webhostapp.com/rlogin.php",
+        StringRequest request= new StringRequest(Request.Method.POST, "https://kamal002.000webhostapp.com/sfzone/api/rlogin.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
