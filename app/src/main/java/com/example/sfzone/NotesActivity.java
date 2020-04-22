@@ -34,6 +34,7 @@ public class NotesActivity extends AppCompatActivity {
     ListView notesListView;
     List<String> titleList = new ArrayList<>();
     List<String> iconList = new ArrayList<>();
+    List<String> urlList = new ArrayList<>();
     public List<NotesDetails> notearray= new ArrayList<>();
 
     @Override
@@ -49,6 +50,7 @@ public class NotesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent noteswebviewIntent = new Intent(getApplicationContext(),notes_webview.class);
+                noteswebviewIntent.putExtra("WEB_URL", urlList.get(position));
                 startActivity(noteswebviewIntent);
             }
         });
@@ -83,12 +85,15 @@ public class NotesActivity extends AppCompatActivity {
                                     notearray.add(note);
                                     titleList.add(note.getFile_Name());
                                     iconList.add(note.getFile_Icon());
+                                    urlList.add(note.getFile_URL());
                                 }
 
                                 MyAdapter adapter = new MyAdapter(c, titleList, iconList);
                                 notesListView.setAdapter(adapter);
 
                                 Toast.makeText(getApplicationContext(),"Got the list.",Toast.LENGTH_SHORT).show();
+
+
                             }
                             catch(Exception e) {
                                 e.printStackTrace();
@@ -132,7 +137,7 @@ public class NotesActivity extends AppCompatActivity {
             myTitle.setText(rtitle.get(position));
             String imgType = rImgs.get(position);
 
-             if(imgType.equals("pdf3")) {
+             if(imgType.equals("pdf")) {
                  images.setImageResource(R.drawable.pdf2);
              }
              else if(imgType.equals("doc")) {

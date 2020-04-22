@@ -5,25 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.sfzone.ActivityforHomeScreen;
 import com.example.sfzone.EventActivity;
-import com.example.sfzone.MainActivity;
 import com.example.sfzone.NotesActivity;
 import com.example.sfzone.R;
+import com.example.sfzone.ScanActivity;
 import com.example.sfzone.TimeTableActivity;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 public class HomeFragment extends Fragment {
 
@@ -68,14 +60,9 @@ public class HomeFragment extends Fragment {
         scanqrImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
-                intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                intentIntegrator.setCameraId(0);
-                intentIntegrator.setOrientationLocked(false);
-                intentIntegrator.setPrompt("Scanning");
-                intentIntegrator.setBeepEnabled(true);
-                intentIntegrator.setBarcodeImageEnabled(true);
-                intentIntegrator.initiateScan();
+                Intent eventsIntent = new Intent(getContext(), ScanActivity.class);
+                startActivity(eventsIntent);
+
             }
         });
 
@@ -89,15 +76,6 @@ public class HomeFragment extends Fragment {
         return root;
 
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
 
-        if (result!=null && result.getContents()!=null){
-//            Toast.makeText(getActivity(),"Attendance Filled",Toast.LENGTH_LONG).show();
-            Toast.makeText(getActivity(),"Attendance Filled",Toast.LENGTH_LONG).show();
-        }
 
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

@@ -34,6 +34,7 @@ public class TimeTableActivity extends AppCompatActivity {
     ListView timetableListView;
     List<String> titleList = new ArrayList<>();
     List<String> iconList = new ArrayList<>();
+    List<String> urlList = new ArrayList<>();
     public List<TimetableDetails> notearray= new ArrayList<TimetableDetails>();
 
     @Override
@@ -48,8 +49,9 @@ public class TimeTableActivity extends AppCompatActivity {
         timetableListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent timetablewebviewIntent = new Intent(getApplicationContext(),notes_webview.class);
-                startActivity(timetablewebviewIntent);
+                Intent noteswebviewIntent = new Intent(getApplicationContext(),notes_webview.class);
+                noteswebviewIntent.putExtra("WEB_URL", urlList.get(position));
+                startActivity(noteswebviewIntent);
             }
         });
 
@@ -83,6 +85,7 @@ public class TimeTableActivity extends AppCompatActivity {
                                     notearray.add(timetable);
                                     titleList.add(timetable.getFile_Name());
                                     iconList.add(timetable.getFile_Icon());
+                                    urlList.add(timetable.getFile_URL());
                                 }
 
                                 MyAdapter adapter = new MyAdapter(c, titleList, iconList);
@@ -135,7 +138,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 myTitle.setText(rtitle.get(position));
                 String imgType = rImgs.get(position);
 
-                if(imgType.equals("pdf3")) {
+                if(imgType.equals("pdf")) {
                     images.setImageResource(R.drawable.pdf2);
                 }
                 else if(imgType.equals("doc")) {

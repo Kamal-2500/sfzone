@@ -20,11 +20,12 @@ public class notes_webview extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notes_webview);
 
+
         webview1 = findViewById(R.id.webview1);
         progressbar1= findViewById(R.id.progressbar1);
         progressbar1.setVisibility(View.VISIBLE);
 
-        String url="https://kamal002.000webhostapp.com/sfzone/uploaded_materials/Assignment-1.pdf";
+        String url=getIntent().getStringExtra("WEB_URL");
         String finalURL="http://drive.google.com/viewerng/viewer?embedded=true&url="+url;
 
         webview1.setWebViewClient(new WebViewClient());
