@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.sfzone.AttendanceReport;
 import com.example.sfzone.EventActivity;
 import com.example.sfzone.NotesActivity;
 import com.example.sfzone.R;
@@ -61,6 +62,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent eventsIntent = new Intent(getContext(), ScanActivity.class);
+                startActivity(eventsIntent);
+
+            }
+        });
+
+        ImageView reportImageView = (ImageView) root.findViewById(R.id.attendance_report_image_view);
+        reportImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventsIntent = new Intent(getContext(), AttendanceReport.class);
                 startActivity(eventsIntent);
 
             }
