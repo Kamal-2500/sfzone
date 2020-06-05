@@ -42,10 +42,11 @@ public class AttendanceReport extends AppCompatActivity {
     Spinner spinner1;
     Button btnSubmit;
     ListView AttendanceReportListView;
-    List<String> presentsubjectList = new ArrayList<>();
-    List<String> totalsubjectList = new ArrayList<>();
-    List<Integer> presentattendanceList = new ArrayList<>();
-    List<Integer> totalattendanceList = new ArrayList<>();
+    //List<String> presentsubjectList = new ArrayList<>();
+    //List<String> totalsubjectList = new ArrayList<>();
+    //List<Integer> presentattendanceList = new ArrayList<>();
+    //List<Integer> totalattendanceList = new ArrayList<>();
+    List<Attendance> attendances = new ArrayList<>();
 
     public List<AttendancePresentDetails> presentattendancearray= new ArrayList<>();
     public List<AttendanceTotalDetails> totalattendancearray= new ArrayList<>();
@@ -116,14 +117,13 @@ public class AttendanceReport extends AppCompatActivity {
                         end_date = "2020-12-31";
                         break;
                 }
-
-               setAttendancePresent(start_date,end_date, c);
-                setAttendanceTotal(start_date,end_date, c);
+                setAttendanceTotal(attendances, start_date,end_date, c);
+               setAttendancePresent(attendances, start_date,end_date, c);
             }
         });
     }
 
-    public void setAttendancePresent(final String start_date, final String end_date, final Context c){
+    public void setAttendancePresent(final List<Attendance> attendances, final String start_date, final String end_date, final Context c){
         try {
             JSONObject jsonBody = new JSONObject();
 
@@ -138,7 +138,9 @@ public class AttendanceReport extends AppCompatActivity {
                         public void onResponse(String response) {
                             try{
                             JSONObject obj = new JSONObject(response);
-
+                            List<Integer> totalDays = new ArrayList<>();
+                            List<Integer> presentDays = new ArrayList<>();
+                            List<String> subjects = new ArrayList<>();
                             JSONArray jsonArray = (JSONArray) obj.get("list");
                             for(int i=0; i<jsonArray.length();i++)
                             {
@@ -147,14 +149,30 @@ public class AttendanceReport extends AppCompatActivity {
                                         jobj.getInt("total_present_days"),
                                         jobj.getString("sub_name")
                                 );
-                                presentattendancearray.add(note);
-                                presentsubjectList.add(note.getSub_Name());
-                                presentattendanceList.add(note.getTotal_Present_Days());
+//                                presentattendancearray.add(note);
+
+                                for (Attendance at : attendances) {
+                                    if (at.getSubName().equals(note.getSub_Name())) {
+                                        at.setPresentDays(note.getTotal_Present_Days());
+                                    }
+                                    totalDays.add(at.totalDays);
+                                    presentDays.add(at.presentDays);
+                                    subjects.add(at.subName);
+                                }
+
+//                                System.out.println(attendances);
+//                                presentsubjectList.add(note.getSub_Name());
+//                                presentattendanceList.add(note.getTotal_Present_Days());
+
+
 
                                 //MyAdapter adapter = new MyAdapter(c,presentsubjectList,presentattendanceList);
                                 //AttendanceReportListView.setAdapter(adapter);
 
-                            }} catch(Exception e) {
+                            }
+                                MyAdapter adapter = new MyAdapter(c,totalDays, presentDays, subjects);
+                                AttendanceReportListView.setAdapter(adapter);
+                            } catch(Exception e) {
                                 e.printStackTrace();
                                 Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_SHORT).show();
                             }
@@ -190,7 +208,7 @@ public class AttendanceReport extends AppCompatActivity {
 
     }
 
-    public void setAttendanceTotal(final String start_date, final String end_date, final Context c){
+    public void setAttendanceTotal(final List<Attendance> attendances, final String start_date, final String end_date, final Context c){
         try {
             JSONObject jsonBody = new JSONObject();
 
@@ -213,9 +231,13 @@ public class AttendanceReport extends AppCompatActivity {
                                             jobj.getString("sub_name"),
                                             jobj.getInt("total_days")
                                                                         );
-                                    totalattendancearray.add(note);
-                                    totalsubjectList.add(note.getSub_Name());
-                                    totalattendanceList.add(note.getTotal_Days());
+//                                    totalattendancearray.add(note);
+                                    Attendance attendance = new Attendance();
+                                    attendance.setSubName(note.getSub_Name());
+                                    attendance.setTotalDays(note.getTotal_Days());
+                                    attendances.add(attendance);
+//                                    totalsubjectList.add(note.getSub_Name());
+//                                    totalattendanceList.add(note.getTotal_Days());
 
                                     //MyAdapter adapter = new MyAdapter(c,presentsubjectList,presentattendanceList);
                                     //AttendanceReportListView.setAdapter(adapter);
@@ -256,38 +278,42 @@ public class AttendanceReport extends AppCompatActivity {
 
     }
 
-//    class MyAdapter extends ArrayAdapter<String> {
-//
-//        Context context;
-//        List<String> rtitle;
-//        List<Integer> rImgs;
-//
-//        MyAdapter(Context c, List<String> title, List<Integer> imgs){
-//            super(c,R.layout.attendance_report_row,R.id.note_title1, title);
-//            this.context= (Context) c;
-//            this.rtitle=title;
-//            this.rImgs=imgs;
-//        }
-//
-//        @NonNull
-//        @Override
-//        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//            LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            View row = layoutInflater.inflate(R.layout.attendance_report_row, parent, false);
-//
-//            TextView myTitle=row.findViewById(R.id.attendance_report_row_subject);
-//            TextView myTitle1=row.findViewById(R.id.attendance_report_row_present);
-//
-//
-//            myTitle.setText(rtitle.get(position));
-//            myTitle1.setText(rImgs.get(position));
-//
-//
-//
-//
-//
-//            return row;
-//        }
-//    }
+    class MyAdapter extends ArrayAdapter<String> {
+
+        Context context;
+        List<String> rsub;
+        List<Integer> rtotal;
+        List<Integer> rpresent;
+
+        MyAdapter(Context c, List<Integer> totalDays,List<Integer> presentDays,List<String> subjects){
+            super(c,R.layout.attendance_report_row);
+            //super(c,R.layout.attendance_report_row,R.id.note_title1, title);
+            this.context= (Context) c;
+            this.rsub=subjects;
+            this.rtotal=totalDays;
+            this.rpresent=presentDays;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.attendance_report_row, parent, false);
+
+            TextView myTitle=row.findViewById(R.id.attendance_report_row_subject);
+            TextView myTitle1=row.findViewById(R.id.attendance_report_row_total);
+            TextView myTitle2=row.findViewById(R.id.attendance_report_row_present);
+
+            myTitle.setText(rsub.get(position));
+            myTitle1.setText(rtotal.get(position));
+            myTitle2.setText(rpresent.get(position));
+
+
+
+
+
+            return row;
+        }
+    }
 
 }
