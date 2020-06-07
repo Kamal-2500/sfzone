@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AttendanceReport"></activity>
+        <activity android:name=".GruhUdhyog"></activity>
+        <activity android:name=".AttendanceReport" />
         <activity android:name=".ScanActivity" />
         <activity android:name=".NotesActivity" />
         <activity android:name=".notes_webview" />

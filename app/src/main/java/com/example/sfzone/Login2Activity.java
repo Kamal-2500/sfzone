@@ -91,6 +91,8 @@ public class Login2Activity extends AppCompatActivity {
                         try {
                             obj = new JSONObject(response);
                             if (username.equals(obj.getString("username"))) {
+                                UserDetails userDetails = UserDetails.getInstance();
+                                userDetails.setId(obj.getInt("id"));
                                 Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_SHORT).show();
                                 Intent homescreenIntent = new Intent(getApplicationContext(),ActivityforHomeScreen.class);
                                 startActivity(homescreenIntent);
